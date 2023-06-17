@@ -1,0 +1,88 @@
+ID,message,count
+1, 'ID' expected,20179
+2, illegal start of expression,5461
+3, not a statement,4955
+4, cannot find symbol: variable ID,4848
+5, missing return statement,3696
+6, incompatible types,2743
+7, illegal start of type,2543
+8, 'else' without 'if',1992
+9, <identifier'ID' expected,1857
+10, cannot find symbol: method ID,1605
+11," reached end of file while parsing, maybe a missing delimiter or closing brace?",1434
+12, bad operand types for binary operator 'ID',1173
+13," class, interface, or enum expected, maybe a missing delimiter or closing brace?",935
+14, unreachable statement,855
+15, '.class' expected,804
+16," class, interface, or enum expected",784
+17, incomparable types,721
+18, variable ID might not have been initialized,717
+19, variable declaration not allowed here,483
+20, illegal character,478
+21, variable ID already defined,471
+22," unexpected type
+required: variable",457
+23, unclosed character literal,443
+24," missing return statement, maybe a missing delimiter or closing brace?",305
+25, cannot find symbol: class ID,294
+26, bad operand type for unary operator 'ID',238
+27, int cannot be dereferenced,232
+28, char cannot be dereferenced,225
+29, array dimension missing,158
+30, no suitable method found for method ID,148
+31," case, default, or 'ID' expected",120
+32, illegal start of statement,109
+33, [empty] empty statement after if,94
+34," method ID in class ID cannot be applied to given types
+required",67
+35, unclosed string literal,66
+36," array required, but int found",52
+37, cannot assign a value to final variable ID,49
+38, illegal line end in character literal,47
+39, invalid method declaration; return type required,44
+40, empty character literal,41
+41, class expected,40
+42, package ID does not exist,37
+43," cannot find symbol, maybe a missing delimiter or closing brace?",35
+44," array required, but java.lang.String found",32
+45, integer number too large,29
+46," illegal start of statement, maybe a missing delimiter or closing brace?",23
+47," missing method body, or declare abstract",20
+48, break outside switch or loop,19
+49, return outside method,15
+50," illegal start of expression, maybe a missing delimiter or closing brace?",12
+51," illegal start of type, maybe a missing delimiter or closing brace?",12
+52, boolean cannot be dereferenced,12
+53, reached end of file while parsing,10
+54," method ID in class ID cannot be applied to given types, maybe a missing delimiter or closing brace?",7
+55, no suitable constructor found,7
+56, something  expected,6
+57, non-static method ID cannot be referenced from a static context,6
+58, unclosed comment,6
+59, illegal escape character,6
+60," array required, but boolean found",5
+61, 'ID' used as an identifier,5
+62," for-each not applicable to expression type
+required",5
+63," 'ID' expected, maybe a missing delimiter or closing brace?",5
+64, bad initializer for for-loop,4
+65, illegal 'ID',4
+66, method ID already defined in class ID,3
+67, call to super must be first statement in constructor,3
+68," '.class' expected, maybe a missing delimiter or closing brace?",2
+69, malformed floating point literal,2
+70, 'void' type not allowed here,2
+71, class ID already defined in package unnamed,2
+72," as of release 8, 'this' is allowed as the parameter name for the receiver type only, which has to be the first parameter",2
+73, illegal underscore,2
+74, Illegal static declaration in inner class ID,2
+75, undefined label,2
+76," canBalance(int[]) has private access in CanBalance, maybe a missing delimiter or closing brace?",1
+77, not a loop label,1
+78," unclosed character literal, maybe a missing delimiter or closing brace?",1
+79, orphaned case,1
+80," not a statement, maybe a missing delimiter or closing brace?",1
+81, 'finally' without 'try',1
+82, illegal initializer for int,1
+83," <identifier'ID' expected, maybe a missing delimiter or closing brace?",1
+84, while expected,1
