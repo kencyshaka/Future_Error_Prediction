@@ -438,7 +438,7 @@ def logging_evaluation_metrics(first_total_scores_list, scores_list, first_score
     plot_confusion_matrix(confusion_matrices, labels_first, "confusion_matrices_first.pdf")
 
     if config.ErrorID_LEN == 85:
-        labels_last = ['ErrorID ' + str(i) for i in range(74, 84)]
+        labels_last = ['ErrorID ' + str(i) for i in range(75, 85)]
         plot_confusion_matrix(confusion_matrices, labels_last, "confusion_matrices_last.pdf")
 
 

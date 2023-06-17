@@ -51,6 +51,7 @@ def main():
         project="TRIAL-DKT",
         # Track hyperparameters and run metadata
         config={
+            "mode": 'Train',
             "learning_rate": config.lr,
             "epochs": config.epochs,
             "attempts": config.length,

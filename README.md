@@ -9,7 +9,7 @@ To train our KT model, the data needs to be processed. There are two major steps
 ### Part I: Prepare the dataset 
 First is to select students attempts with errors and their first compiled attempt for every question Features 
 
-1. Run src/prepare/preprocessing_errors.py to select student and error associated with their attempts 
+1. Run src/prepare/preprocessing_error.py to select student and error associated with their attempts 
 
 ### Part II: Prepare the DKT Features
 To prepare the DKT features for training, validation, and testing, follow these steps:
