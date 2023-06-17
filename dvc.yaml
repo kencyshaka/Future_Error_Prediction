@@ -44,3 +44,17 @@ stages:
     outs:
     - data/prepared/question/embedding
     - data/prepared/question/pebg_model
+  train_and_evaluate:
+    cmd: python src/train/run.py
+    deps:
+    - data/prepared/DKTFeatures_439
+    - data/raw/question/question_embeddings.csv
+    - src/config.py
+    - src/train/c2vRNNModel.py
+    - src/train/dataloader.py
+    - src/train/evaluation.py
+    - src/train/loss_function.py
+    - src/train/readdata.py
+    outs:
+    - model
+    - result
