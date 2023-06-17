@@ -130,3 +130,54 @@ stages:
       md5: 6ed969f8e8e455f74ae7f2d78354cf1f.dir
       size: 39486
       nfiles: 2
+  train_and_evaluate:
+    cmd: python src/train/run.py
+    deps:
+    - path: data/prepared/DKTFeatures_439
+      hash: md5
+      md5: 828404a6b1b0f4c55e8aa1abcf8d7f67.dir
+      size: 60805116
+      nfiles: 25
+    - path: data/raw/question/question_embeddings.csv
+      hash: md5
+      md5: 618a3c068a6b293ce455aa6a40d069c7
+      size: 673792
+    - path: src/config.py
+      hash: md5
+      md5: 4b7317562b0ea4c36233a2bc439e6423
+      size: 799
+    - path: src/train/c2vRNNModel.py
+      hash: md5
+      md5: 003271e799852828255c59a458a40499
+      size: 7007
+    - path: src/train/dataloader.py
+      hash: md5
+      md5: 6c4d23b987bf12b253b6a1e302c34802
+      size: 1995
+    - path: src/train/loss_function.py
+      hash: md5
+      md5: d316a49a1a76f9c8377c915d36fabac1
+      size: 6878
+    - path: src/train/readdata.py
+      hash: md5
+      md5: 4b9cc7cbb22bcfa995ec00495c432f4a
+      size: 13256
+    outs:
+    - path: model
+      hash: md5
+      md5: 163f3914398613add26945e1818ddf70.dir
+      size: 36548726
+      nfiles: 2
+    - path: result
+      hash: md5
+      md5: a42a706706d988ca731b757c415428ec.dir
+      size: 41057
+      nfiles: 2
+  evaluate_only:
+    cmd: python src/train/evaluation.py
+    deps:
+    - path: model
+      hash: md5
+      md5: 163f3914398613add26945e1818ddf70.dir
+      size: 36548726
+      nfiles: 2

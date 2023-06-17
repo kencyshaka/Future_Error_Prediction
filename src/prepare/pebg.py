@@ -9,7 +9,7 @@
 
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-
+current_dir = os.path.dirname(os.path.abspath(__file__))
 import numpy as np
 import math
 from scipy import sparse
@@ -21,8 +21,8 @@ import wandb
 
 # load data
 
-data_folder = '../../data/prepared/question'
-data_folder_output = '../../data/prepared/question/embedding'
+data_folder = os.path.join(current_dir,'../../data/prepared/question')
+data_folder_output = os.path.join(current_dir, '../../data/prepared/question/embedding')
 con_sym = '_'
 
 saved_model_folder = os.path.join(data_folder, 'pebg_model')

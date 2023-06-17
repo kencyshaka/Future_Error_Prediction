@@ -138,13 +138,13 @@ def train_epoch(model, trainLoader, optimizer, loss_func, config, device,epoch):
         batch_new = batch[:,:-1,:].to(device)    # pass except the last one.
         pred = model(batch_new)                  # trains the model and get the results [batch,49,85 (size of errorIDs)]
         starting_point = config.questions*2 + config.MAX_CODE_LEN*3 + config.MAX_QUESTION_LEN_partI + config.MAX_QUESTION_LEN_partII + config.Reference_LEN
-        print("the shape of the batch is", batch[:,:,starting_point:].shape)
-        print("the shape of the model output",pred.shape)
+        # print("the shape of the batch is", batch[:,:,starting_point:].shape)
+        # print("the shape of the model output",pred.shape)
         loss, prediction, ground_truth = loss_func(pred, batch[:,:,starting_point:])
 
 
-        print("the prediciton is ", prediction.shape)
-        print("the ground_truth is ", ground_truth.shape)
+        # print("the prediciton is ", prediction.shape)
+        # print("the ground_truth is ", ground_truth.shape)
 
         # log the wandb loss value here for training per epoch
         wandb.log({"loss": loss, "epoch": epoch})

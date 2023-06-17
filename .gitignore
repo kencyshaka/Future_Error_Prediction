@@ -9,6 +9,7 @@ src/wandb/
 data/prepared/
 data/passed_dataset/
 data/DKTFeatures_439/
+wandb/
 *.out
 data.zip
 src/*.sh
@@ -143,3 +144,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/model
+/result

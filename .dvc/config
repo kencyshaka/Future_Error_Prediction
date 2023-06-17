@@ -1,5 +1,5 @@
 [core]
     analytics = false
-    remote = remote_storage
-['remote "remote_storage"']
-    url = ssh://mshaka@143.239.81.4:/home/mshaka/remote_storage
+    remote = myremote
+['remote "myremote"']
+    url = ssh://mshaka@143.239.81.4:/home/mshaka/dvc_storage

@@ -2,15 +2,18 @@ import os
 import random
 import wandb
 import torch
-
+import sys
 import torch.optim as optim
 import numpy as np
 
 from dataloader import get_data_loader
 import loss_function
 import warnings
-
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(current_dir, '..', '..')  # Adjust the number of '..' as per your file structure
+sys.path.append(src_dir)
 warnings.filterwarnings("ignore")
+
 from c2vRNNModel import c2vRNNModel
 from src.config import Config
 from evaluation import logging_evaluation_metrics
@@ -38,17 +41,17 @@ def main():
     else:
         device = torch.device('cpu')
 
-    save_model = '../../model/'
+    save_model = os.path.join(current_dir, '../../model/')
     if not os.path.isdir(save_model):
         os.mkdir(save_model)
 
-    save_result = '../../result/'
+    save_result = os.path.join(current_dir, '../../result/')
     if not os.path.isdir(save_result):
         os.mkdir(save_result)
 
     run = wandb.init(
         # Set the project where this run will be logged
-        project="TRIAL-DKT",
+        project="Future Error prediction",
         # Track hyperparameters and run metadata
         config={
             "mode": 'Train',
@@ -79,13 +82,12 @@ def main():
 
         train_loader, test_loader = get_data_loader(config, config.questions, config.length, fold)
         if config.assignment == 487:
-            node_count, path_count = np.load(
-                "../../data/prepared/DKTFeatures_" + str(config.assignment) + "/np_counts_" + str(
-                    config.assignment) + "_" + str(
-                    fold) + ".npy")
+            node_count, path_count = np.load(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"
+                                                          + str(config.assignment) + "/np_counts_"
+                                                          + str(config.assignment) + "_" + str(fold) + ".npy"))
         else:
-            node_count, path_count = np.load(
-                "../../data/prepared/DKTFeatures_" + str(config.assignment) + "/np_counts.npy")
+            node_count, path_count = np.load(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"
+                                                          + str(config.assignment) + "/np_counts.npy"))
 
         model = c2vRNNModel(config, config.model_type, config.questions * 2,
                             config.hidden,

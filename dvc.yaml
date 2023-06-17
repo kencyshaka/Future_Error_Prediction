@@ -52,9 +52,11 @@ stages:
     - src/config.py
     - src/train/c2vRNNModel.py
     - src/train/dataloader.py
-    - src/train/evaluation.py
     - src/train/loss_function.py
     - src/train/readdata.py
     outs:
-    - model
     - result
+  evaluate_only:
+    cmd: python src/train/evaluation.py
+    deps:
+    - model

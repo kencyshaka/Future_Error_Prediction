@@ -1,5 +1,6 @@
 import torch
 import os
+import sys
 import numpy as np
 import random
 import wandb
@@ -7,6 +8,9 @@ import loss_function
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(current_dir, '..', '..')  # Adjust the number of '..' as per your file structure
+sys.path.append(src_dir)
 from src.config import Config
 from c2vRNNModel import c2vRNNModel
 from dataloader import get_test_loader
@@ -63,16 +67,16 @@ def main():
 
     for fold in range(2):
         print("----", fold, "-th run----")
+
         test_loader = get_test_loader(config, config.questions, config.length, fold)
         # load the model
         if config.assignment == 487:
-            node_count, path_count = np.load(
-                "../../data/prepared/DKTFeatures_" + str(config.assignment) + "/np_counts_" + str(
-                    config.assignment) + "_" + str(
-                    fold) + ".npy")
+            node_count, path_count = np.load(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"
+                                                + str(config.assignment) + "/np_counts_" + str(config.assignment) + "_"
+                                                + str(fold) + ".npy"))
         else:
-            node_count, path_count = np.load(
-                "../../data/prepared/DKTFeatures_" + str(config.assignment) + "/np_counts.npy")
+            node_count, path_count = np.load(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"
+                                                          + str(config.assignment) + "/np_counts.npy"))
 
         model = c2vRNNModel(config, config.model_type, config.questions * 2,
                             config.hidden,
@@ -81,7 +85,7 @@ def main():
                             node_count, path_count, device)
 
         # Load the saved model weights
-        model.load_state_dict(torch.load('../../model/model_' + str(fold) + '.pth'))
+        model.load_state_dict(torch.load(os.path.join(current_dir,'../../model/model_' + str(fold) + '.pth')))
 
         # Set the model in evaluation mode
         model.eval()
@@ -245,19 +249,19 @@ def evaluate_multilabel_classification(y_true, y_pred):
     hamming = hamming_loss(y_true, y_pred_thresholded)
 
     # Calculate micro-averaged precision, recall, and F1 score
-    micro_precision = precision_score(y_true, y_pred_thresholded, average='micro', zero_division=1)
-    micro_recall = recall_score(y_true, y_pred_thresholded, average='micro', zero_division=1)
-    micro_f1 = f1_score(y_true, y_pred_thresholded, average='micro', zero_division=1)
+    micro_precision = precision_score(y_true, y_pred_thresholded, average='micro')
+    micro_recall = recall_score(y_true, y_pred_thresholded, average='micro')
+    micro_f1 = f1_score(y_true, y_pred_thresholded, average='micro')
 
     # Calculate weigthed-averaged precision, recall, and F1 score
-    weighted_precision = precision_score(y_true, y_pred_thresholded, average='weighted', zero_division=1)
-    weighted_recall = recall_score(y_true, y_pred_thresholded, average='weighted', zero_division=1)
-    weighted_f1 = f1_score(y_true, y_pred_thresholded, average='weighted', zero_division=1)
+    weighted_precision = precision_score(y_true, y_pred_thresholded, average='weighted')  # , zero_division=1
+    weighted_recall = recall_score(y_true, y_pred_thresholded, average='weighted')
+    weighted_f1 = f1_score(y_true, y_pred_thresholded, average='weighted')
 
     # Calculate macro-averaged precision, recall, and F1 score
-    macro_precision = precision_score(y_true, y_pred_thresholded, average='macro', zero_division=1)
-    macro_recall = recall_score(y_true, y_pred_thresholded, average='macro', zero_division=1)
-    macro_f1 = f1_score(y_true, y_pred_thresholded, average='macro', zero_division=1)
+    macro_precision = precision_score(y_true, y_pred_thresholded, average='macro')
+    macro_recall = recall_score(y_true, y_pred_thresholded, average='macro')
+    macro_f1 = f1_score(y_true, y_pred_thresholded, average='macro')
 
     # calculate multilabel_confusion_matrix
     cm = multilabel_confusion_matrix(y_true, y_pred_thresholded)
@@ -448,7 +452,7 @@ def plot_confusion_matrix(confusion_matrices, labels_first,filename):
     axes = axes.ravel()
 
     # Create a directory to save the results
-    save_dir = '../../result'
+    save_dir = os.path.join(current_dir,'../../result')
     os.makedirs(save_dir, exist_ok=True)
 
     # Create a PDF file to save the confusion matrices

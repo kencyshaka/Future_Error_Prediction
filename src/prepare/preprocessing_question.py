@@ -2,13 +2,14 @@ import os
 import pandas as pd
 import numpy as np
 from scipy import sparse
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 class DataProcess():
     def __init__(self, data_folder_main='../../data/raw', file_name='MainTable.csv'):
-        print("Process Dataset %s" % os.path.join(data_folder_main,file_name))
-        self.data_folder_input = '../../data/raw/question'
-        self.data_folder_output = '../../data/prepared/question'
-        self.data_folder_main = data_folder_main
+        print("Process Dataset %s" % os.path.join(data_folder_main, file_name))
+        self.data_folder_input = os.path.join(current_dir, '../../data/raw/question')
+        self.data_folder_output = os.path.join(current_dir, '../../data/prepared/question')
+        self.data_folder_main = os.path.join(current_dir, data_folder_main)
         self.file_name = file_name
 
         if not os.path.isdir(self.data_folder_output):
@@ -150,7 +151,7 @@ if __name__ == '__main__':
     DP = DataProcess()
     DP.pro_skill_graph()
 
-    pro_skill_coo = sparse.load_npz("../../data/prepared/question/pro_skill_sparse.npz")
+    pro_skill_coo = sparse.load_npz(os.path.join(current_dir, "../../data/prepared/question/pro_skill_sparse.npz"))
     [pro_num, skill_num] = pro_skill_coo.toarray().shape
     print('problem number %d, skill number %d' % (pro_num, skill_num))
     pro_skill_csc = pro_skill_coo.tocsc()
