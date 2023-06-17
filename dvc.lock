@@ -1,0 +1,132 @@
+schema: '2.0'
+stages:
+  prepare_error_data:
+    cmd: python src/prepare/preprocessing_error.py
+    deps:
+    - path: data/raw/errors/S19errors.csv
+      hash: md5
+      md5: 8713713e68c6ca43c090a9e9244008bf
+      size: 3867
+    outs:
+    - path: data/prepared/errors/error_MainTable.csv
+      hash: md5
+      md5: cb53c40c00feb323db4905581cb0217f
+      size: 4333987
+    - path: data/prepared/errors/submission_error_list.csv
+      hash: md5
+      md5: 81ecbd4bf8a348d4a28e763011c28084
+      size: 2979925
+    - path: data/prepared/errors/submission_list.csv
+      hash: md5
+      md5: 695dd028ba6a1a859e5ef6d547e25151
+      size: 1251164
+  prepare_code_data:
+    cmd:
+    - python src/prepare/preprocessing.py
+    - python src/prepare/path_extractor.py
+    deps:
+    - path: data/prepared/errors/error_MainTable.csv
+      hash: md5
+      md5: cb53c40c00feb323db4905581cb0217f
+      size: 4333987
+    - path: data/raw/CodeStates
+      hash: md5
+      md5: abf1217dadab8c76c820d69d00f08d32.dir
+      size: 25748082
+      nfiles: 2
+    outs:
+    - path: data/prepared/DKTFeatures_439
+      hash: md5
+      md5: f810524c84506ad7694055d252650e90.dir
+      size: 60804972
+      nfiles: 24
+  prepare_question_data:
+    cmd: python src/prepare/preprocessing_question.py
+    deps:
+    - path: data/raw/MainTable.csv
+      hash: md5
+      md5: afee103c42835b6f49acfddf191be1ee
+      size: 40035033
+    - path: data/raw/question/concepts.csv
+      hash: md5
+      md5: 6df8a6a9dc62c99cc6b3d48a037e25df
+      size: 243
+    - path: data/raw/question/prompt_concept.csv
+      hash: md5
+      md5: e61ccee93211756a0a43a5e97909121e
+      size: 15750
+    outs:
+    - path: data/prepared/question/combined_concepts.csv
+      hash: md5
+      md5: 35467252922c082715a5533583d33f9d
+      size: 16889
+    - path: data/prepared/question/id_pro_dict.txt
+      hash: md5
+      md5: c2a9e4125ce9cd953befe099f4f80b4a
+      size: 402
+    - path: data/prepared/question/pro_feat.npz
+      hash: md5
+      md5: 7709159c032cbd0e005a5f0c33792f1e
+      size: 870
+    - path: data/prepared/question/pro_id_dict.txt
+      hash: md5
+      md5: b1fe9c159b17de3b2630a56ae6dc0a44
+      size: 402
+    - path: data/prepared/question/pro_pro_sparse.npz
+      hash: md5
+      md5: 37693b88d2fcb93178cba8ba19584d63
+      size: 4471
+    - path: data/prepared/question/pro_skill_sparse.npz
+      hash: md5
+      md5: d1bca68edbb629571e916f1372f7cde2
+      size: 1239
+    - path: data/prepared/question/skill_id_dict.txt
+      hash: md5
+      md5: f8eb3676a2569a65bb990f3f8edc68d2
+      size: 800
+    - path: data/prepared/question/skill_skill_sparse.npz
+      hash: md5
+      md5: 65de6cc79074ee0102bf9965b9c72e4d
+      size: 1400
+  train_bipartite_graph:
+    cmd: python src/prepare/run_pebg.py
+    deps:
+    - path: data/prepared/question/id_pro_dict.txt
+      hash: md5
+      md5: c2a9e4125ce9cd953befe099f4f80b4a
+      size: 402
+    - path: data/prepared/question/pro_feat.npz
+      hash: md5
+      md5: 7709159c032cbd0e005a5f0c33792f1e
+      size: 870
+    - path: data/prepared/question/pro_id_dict.txt
+      hash: md5
+      md5: b1fe9c159b17de3b2630a56ae6dc0a44
+      size: 402
+    - path: data/prepared/question/pro_pro_sparse.npz
+      hash: md5
+      md5: 37693b88d2fcb93178cba8ba19584d63
+      size: 4471
+    - path: data/prepared/question/pro_skill_sparse.npz
+      hash: md5
+      md5: d1bca68edbb629571e916f1372f7cde2
+      size: 1239
+    - path: data/prepared/question/skill_id_dict.txt
+      hash: md5
+      md5: f8eb3676a2569a65bb990f3f8edc68d2
+      size: 800
+    - path: data/prepared/question/skill_skill_sparse.npz
+      hash: md5
+      md5: 65de6cc79074ee0102bf9965b9c72e4d
+      size: 1400
+    outs:
+    - path: data/prepared/question/embedding
+      hash: md5
+      md5: 3b52e43ca47771622b0ff465e67c0178.dir
+      size: 65812
+      nfiles: 1
+    - path: data/prepared/question/pebg_model
+      hash: md5
+      md5: 6ed969f8e8e455f74ae7f2d78354cf1f.dir
+      size: 39486
+      nfiles: 2
