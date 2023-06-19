@@ -165,18 +165,18 @@ stages:
     outs:
     - path: model
       hash: md5
-      md5: 163f3914398613add26945e1818ddf70.dir
-      size: 36548726
+      md5: 0f3fd2494b452fa6d984e42f4022875e.dir
+      size: 177584590
       nfiles: 2
     - path: result
       hash: md5
-      md5: 087f0898e265ae15d2df12da69302a54.dir
-      size: 41057
+      md5: e8a21a38af22f23104c0cfd3c2e62e5f.dir
+      size: 41002
       nfiles: 2
   evaluate_only:
     cmd: python src/train/evaluation.py
     deps:
     - path: model/model_0.pth
       hash: md5
-      md5: 62fce2045a52b92da4c7f4d4e07212e7
-      size: 18274363
+      md5: 6aa5a5a38c63094aaa33c464334e215b
+      size: 88792295
