@@ -39,7 +39,7 @@ def main():
 
     run = wandb.init(
         # Set the project where this run will be logged
-        project="TRIAL-DKT",
+        project="Future Error prediction",
         # Track hyperparameters and run metadata
         config={
             "mode": 'Eval',

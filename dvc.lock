@@ -31,15 +31,15 @@ stages:
       size: 4333987
     - path: data/raw/CodeStates
       hash: md5
-      md5: abf1217dadab8c76c820d69d00f08d32.dir
-      size: 25748082
-      nfiles: 2
+      md5: 1b0cf1dfb61ce3809a2a451cb538f2b6.dir
+      size: 25747745
+      nfiles: 1
     outs:
     - path: data/prepared/DKTFeatures_439
       hash: md5
-      md5: f810524c84506ad7694055d252650e90.dir
-      size: 60804972
-      nfiles: 24
+      md5: 828404a6b1b0f4c55e8aa1abcf8d7f67.dir
+      size: 60805116
+      nfiles: 25
   prepare_question_data:
     cmd: python src/prepare/preprocessing_question.py
     deps:
@@ -170,14 +170,13 @@ stages:
       nfiles: 2
     - path: result
       hash: md5
-      md5: a42a706706d988ca731b757c415428ec.dir
+      md5: 087f0898e265ae15d2df12da69302a54.dir
       size: 41057
       nfiles: 2
   evaluate_only:
     cmd: python src/train/evaluation.py
     deps:
-    - path: model
+    - path: model/model_0.pth
       hash: md5
-      md5: 163f3914398613add26945e1818ddf70.dir
-      size: 36548726
-      nfiles: 2
+      md5: 62fce2045a52b92da4c7f4d4e07212e7
+      size: 18274363

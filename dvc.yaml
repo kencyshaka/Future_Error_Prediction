@@ -56,7 +56,8 @@ stages:
     - src/train/readdata.py
     outs:
     - result
+    - model
   evaluate_only:
     cmd: python src/train/evaluation.py
     deps:
-    - model
+    - model/model_0.pth
