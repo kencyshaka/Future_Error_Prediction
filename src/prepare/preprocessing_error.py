@@ -1,6 +1,12 @@
 import re
 import os
+import sys
 import pandas as pd
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(current_dir, '..', '..')  # Adjust the number of '..' as per your file structure
+sys.path.append(src_dir)
+
 from src.ProgSnap2 import ProgSnap2Dataset
 
 
@@ -40,16 +46,17 @@ def get_event_list(main_table):
     print("event list shape after cleaning ---", event_list.shape)
     print("event list---", event_list.head())
 
-    if not os.path.isdir('../../data/prepared/errors'):
-        os.mkdir('../../data/prepared/errors')
+    if not os.path.isdir(os.path.join(current_dir, '../../data/prepared/errors')):
+        os.mkdir(os.path.join(current_dir, '../../data/prepared/errors'))
 
-    event_list.to_csv('../../data/prepared/errors/submission_list.csv', index=False)
+    event_list.to_csv(os.path.join(current_dir, '../../data/prepared/errors/submission_list.csv'), index=False)
 
     return event_list
 
 
 def get_error_list(main_table):
-    compile_messages = main_table[(main_table['EventType'] == 'Compile.Error')]  # get the compiler message for each record with errors
+    compile_messages = main_table[
+        (main_table['EventType'] == 'Compile.Error')]  # get the compiler message for each record with errors
     compile_messages = compile_messages[['ParentEventID', 'CompileMessageData']]
     # if isDataset == CF.F19:
     #     compile_messages['ParentEventID'] = compile_messages['ParentEventID'].astype(
@@ -63,7 +70,7 @@ def get_error_list(main_table):
     print("error list shape ---", error_list.shape)
     print("error list---", error_list.head())
 
-    error_list.to_csv('../../data/prepared/errors/submission_error_list.csv', index=False)
+    error_list.to_csv(os.path.join(current_dir, '../../data/prepared/errors/submission_error_list.csv'), index=False)
 
     return error_list
 
@@ -195,7 +202,6 @@ def get_all_errors_per_line(error_line, error_list, df_error_ID):
 
     IDs = '_'.join(str(id) for id in ID)
 
-
     return IDs
 
 
@@ -214,8 +220,9 @@ def formatDataset_Error(df_submission, error_list, df_error_ID, main_table):
                 'subject_ID': row['SubjectID'],
                 'assignment_ID': row['AssignmentID'],
                 'problem_ID': row['ProblemID'],
-                'submission_ID': submissions[submission_len-1],
-                'codestate_ID': main_table.loc[main_table['EventID'] == submissions[submission_len-1], 'CodeStateID'].values[0],
+                'submission_ID': submissions[submission_len - 1],
+                'codestate_ID':
+                    main_table.loc[main_table['EventID'] == submissions[submission_len - 1], 'CodeStateID'].values[0],
                 'isError': 0,
                 'error_ID': "0"
             })
@@ -223,7 +230,7 @@ def formatDataset_Error(df_submission, error_list, df_error_ID, main_table):
             for i in range(submission_len):
                 error_msgs = error_list.loc[
                     error_list['ParentEventID'] == submissions[i], 'submission_error_list'].values
-                if error_msgs.size > 0: #the submission has errors
+                if error_msgs.size > 0:  # the submission has errors
                     # error_msgs = error_list.loc[error_list['ParentEventID'] == submissions[i], 'submission_error_list'].values
                     error_msgs = error_msgs[0].split("@")
                     error_lines = [get_line_number(msg) for msg in error_msgs]
@@ -239,11 +246,12 @@ def formatDataset_Error(df_submission, error_list, df_error_ID, main_table):
                         'assignment_ID': row['AssignmentID'],
                         'problem_ID': row['ProblemID'],
                         'submission_ID': submissions[i],
-                        'codestate_ID': main_table.loc[main_table['EventID'] == submissions[i], 'CodeStateID'].values[0],
+                        'codestate_ID': main_table.loc[main_table['EventID'] == submissions[i], 'CodeStateID'].values[
+                            0],
                         'isError': 1,
                         'error_ID': '_'.join(str(id) for id in error_IDs)
                     })
-                else:  #student has fixed esxisitng errors
+                else:  # student has fixed esxisitng errors
                     data.append({
                         'subject_ID': row['SubjectID'],
                         'assignment_ID': row['AssignmentID'],
@@ -262,12 +270,11 @@ def formatDataset_Error(df_submission, error_list, df_error_ID, main_table):
 
 
 if __name__ == '__main__':
-    PATH = "../../data/raw"
+    PATH = os.path.join(current_dir, "../../data/raw")
     data = ProgSnap2Dataset(PATH)
 
-    df_error_ID = pd.read_csv('../../data/raw/errors/S19errors.csv')
+    df_error_ID = pd.read_csv(os.path.join(current_dir, '../../data/raw/errors/S19errors.csv'))
     main_table = data.get_main_table()
-
 
     event_list = get_event_list(main_table)
     error_list = get_error_list(main_table)
@@ -277,6 +284,4 @@ if __name__ == '__main__':
     formated_data = formatDataset_Error(event_list, error_list, df_error_ID, main_table)
     print("the shape of the formated dataset", formated_data.shape)
 
-    formated_data.to_csv('../../data/prepared/errors/error_MainTable.csv', index=False)
-
-    # don't forget to add the student attempts that hard no error while it was their first attempt
+    formated_data.to_csv(os.path.join(current_dir, '../../data/prepared/errors/error_MainTable.csv'), index=False)

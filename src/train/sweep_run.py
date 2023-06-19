@@ -15,7 +15,6 @@ sys.path.append(src_dir)
 warnings.filterwarnings("ignore")
 
 from c2vRNNModel import c2vRNNModel
-from src.config import Config
 from evaluation import logging_evaluation_metrics
 
 wandb.login()
@@ -31,7 +30,8 @@ def setup_seed(seed=0):
 
 
 def main():
-    config = Config()
+    wandb.init(project="Sweep Future Error prediction")
+    config = wandb.config
 
     setup_seed(0)
 
@@ -49,27 +49,7 @@ def main():
     if not os.path.isdir(save_result):
         os.mkdir(save_result)
 
-    run = wandb.init(
-        # Set the project where this run will be logged
-        project="Future Error prediction",
-        # Track hyperparameters and run metadata
-        config={
-            "mode": 'Train',
-            "learning_rate": config.lr,
-            "epochs": config.epochs,
-            "attempts": config.length,
-            "batch": config.bs,
-            "questions": config.questions,
-            "assignment": config.assignment,
-            "device": device,
-            "model_type": config.model_type,
-            "code": config.MAX_CODE_LEN * 3,
-            "question": config.MAX_QUESTION_LEN_partI + config.MAX_QUESTION_LEN_partII,
-            "q_embedds_type": config.embedds_type,
-            "error_vector": config.ErrorID_LEN,
-            "prediction": config.Prediction,
-            "loss_type": config.loss_type,
-        })
+
 
     performance_list = []
     scores_list = []
@@ -124,4 +104,87 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sweep_config = {
+        'method': 'random',  # grid, random
+        'metric': {
+            'name': 'Overall_F1_score',
+            'goal': 'maximize'
+        },
+        'parameters': {
+            'epochs': {
+                'values': [5, 10, 15, 40, 60]
+            },
+            'bs': {
+                'values': [32, 64, 128]
+            },
+            'lr': {
+                'distribution': 'uniform',
+                'min': 0.000001,
+                'max': 0.01
+                # 'values': [ 0.0001, 0.0009]
+            },
+            'hidden': {
+                'values': [128, 260, 512]
+            },
+            'layers': {
+                'values': [1, 4, 6, 8]
+            },
+            'loss_type': {
+                'values': ["BCE"]
+            },
+            'length': {
+                'values': [50]
+            },
+            'questions': {
+                'values': [10]
+            },
+            'assignment': {
+                'values': [439]
+            },
+            'code_path_length': {
+                'values': [8]
+            },
+            'code_path_width': {
+                'values': [2]
+            },
+            'MAX_CODE_LEN': {
+                'values': [100]
+            },
+            'Reference_LEN': {
+                'values': [200]
+            },
+            'embedds_type': {
+                'values': ["p10"]
+            },
+            'Prediction': {
+                'values': ["ErrorIDs"]
+            },
+            'ErrorID_LEN': {
+                'values': [85]
+            },
+            'model_type': {
+                'values': ['E-Code-DKT', 'R-Code-DKT', 'P-Code-DKT', 'DKT','Code-DKT']
+            },
+            'MAX_QUESTION_LEN_partI': {
+                'values': [0, 768]
+            },
+            'MAX_QUESTION_LEN_partII': {
+                'values': [0, 128]
+            },
+        }
+    }
+
+    # 3: Start the sweep
+    sweep_id = wandb.sweep(
+        sweep=sweep_config,
+        project="Sweep Future Error prediction"
+    )
+    print("the sweep_id is", sweep_id)
+
+    wandb.agent(sweep_id, function=main, count=50)
+
+
+
+
+
+

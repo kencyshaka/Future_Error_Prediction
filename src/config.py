@@ -16,6 +16,6 @@ class Config:
         self.MAX_QUESTION_LEN_partI = 768  #768
         self.MAX_QUESTION_LEN_partII = 128  #128
         self.Reference_LEN = 200 # 200
-        self.embedds_type = "t50"
+        self.embedds_type = "p10"
         self.ErrorID_LEN = 85
         self.Prediction = "ErrorIDs" #[Performance]

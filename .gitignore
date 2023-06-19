@@ -3,12 +3,13 @@
 .ipynb_checkpoints
 
 #large files
-src/train/wandb
-src/prepare/wandb
-src/wandb
+src/train/wandb/
+src/prepare/wandb/
+src/wandb/
 data/prepared/
 data/passed_dataset/
 data/DKTFeatures_439/
+wandb/
 *.out
 data.zip
 src/*.sh
@@ -143,3 +144,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/model
+/result

@@ -1,13 +1,17 @@
 import pandas as pd
-import json
 from anytree import Node, RenderTree
 from anytree.search import findall_by_attr
 from anytree.walker import Walker
 import numpy as np
-import argparse
+import sys
 import os
 import random
 import javalang
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(current_dir, '..', '..')  # Adjust the number of '..' as per your file structure
+sys.path.append(src_dir)
+
 from src.config import Config
 
 def get_token(node):
@@ -166,8 +170,8 @@ def main():
     
     config = Config()
 
-    code_df = pd.read_csv("../../data/raw/CodeStates/CodeStates.csv")
-    main_df = pd.read_csv('../../data/prepared/errors/error_MainTable.csv')
+    code_df = pd.read_csv(os.path.join(current_dir, "../../data/raw/CodeStates/CodeStates.csv"))
+    main_df = pd.read_csv(os.path.join(current_dir, '../../data/prepared/errors/error_MainTable.csv'))
     
     # main_df = main_df[main_df["EventType"] == "Run.Program"]
     main_df = main_df[main_df["assignment_ID"] == config.assignment]
@@ -206,7 +210,7 @@ def main():
     main_df["RawASTPath"] = ["@".join(A) for A in AST_paths]
     print("storing the data")
     
-    main_df.to_csv("../../data/prepared/DKTFeatures_"+str(config.assignment)+"/labeled_paths.tsv", sep="\t", header=True)
+    main_df.to_csv(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"+str(config.assignment)+"/labeled_paths.tsv"), sep="\t", header=True)
     
         
 if __name__ == "__main__":

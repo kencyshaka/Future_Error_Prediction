@@ -1,0 +1,5 @@
+[core]
+    analytics = false
+    remote = myremote
+['remote "myremote"']
+    url = ssh://mshaka@143.239.81.4:/home/mshaka/dvc_storage

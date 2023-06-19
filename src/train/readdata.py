@@ -1,8 +1,15 @@
 import numpy as np
 import itertools
 import pandas as pd
+import os
+import sys
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(current_dir, '..', '..')  # Adjust the number of '..' as per your file structure
+sys.path.append(src_dir)
 from src.config import Config
-import re
+
+
 def create_word_index_table(vocab):
     """
     Creating word to index table
@@ -67,8 +74,8 @@ class data_reader():
     def get_data(self, file_path):
         config = Config()
         data = []
-        code_df = pd.read_csv("../../data/prepared/DKTFeatures_"+str(config.assignment)+"/labeled_paths.tsv",sep="\t")
-        training_students = np.load("../../data/prepared/DKTFeatures_"+str(config.assignment)+"/training_students.npy",allow_pickle=True)
+        code_df = pd.read_csv(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"/labeled_paths.tsv"),sep="\t")
+        training_students = np.load(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"/training_students.npy"),allow_pickle=True)
         all_training_code = code_df[code_df['subject_ID'].isin(training_students)]['RawASTPath']
         separated_code = []
         for code in all_training_code:
@@ -110,9 +117,9 @@ class data_reader():
         path_count = len(path_hist)
 
         if config.assignment == 487:
-            np.save("../../data/prepared/DKTFeatures_"+str(config.assignment)+"/np_counts_"+str(self.fold )+".npy", [node_count, path_count])
+            np.save(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"/np_counts_"+str(self.fold)+".npy"), [node_count, path_count])
         else:
-            np.save("../../data/prepared/DKTFeatures_"+str(config.assignment)+"/np_counts.npy", [node_count, path_count])
+            np.save(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"/np_counts.npy"), [node_count, path_count])
 
         # small frequency then abandon, for node and path
         valid_node = [node for node, count in node_hist.items()]
@@ -125,11 +132,11 @@ class data_reader():
         # get the question embeddings
 
         #part I question embeddings from the GPT-2
-        question_embeddings = pd.read_csv('../../data/raw/question/question_embeddings.csv')
+        question_embeddings = pd.read_csv(os.path.join(current_dir, '../../data/raw/question/question_embeddings.csv'))
         q_embeddings = question_embeddings[question_embeddings['AssignmentID'] == config.assignment]
 
         # part II question embeddings from the bipartite graph embeddings
-        embed_data = np.load('../../data/prepared/question/embedding/embedding_'+config.embedds_type+'.npz')
+        embed_data = np.load(os.path.join(current_dir, '../../data/prepared/question/embedding/embedding_'+config.embedds_type+'.npz'))
         _, _, pre_pro_embed = embed_data['pro_repre'], embed_data['skill_repre'], embed_data['pro_final_repre']
         #print(pre_pro_embed.shape, pre_pro_embed.dtype)
 
@@ -273,12 +280,14 @@ class data_reader():
         train_data = self.get_data(self.train_path)
         val_data = self.get_data(self.val_path)
         if self.config.assignment == 487:
-            np.save("../../data/prepared/DKTFeatures_"+str(self.config.assignment)+"/train_data_"+str(self.fold) +".npy", np.array(train_data+val_data))
+            np.save(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(self.config.assignment)
+                                 +"/train_data_"+str(self.fold) +".npy"), np.array(train_data+val_data))
         return np.array(train_data+val_data)
 
     def get_test_data(self):
         print('loading test data...',self.test_path)
         test_data = self.get_data(self.test_path)
         if self.config.assignment == 487:
-            np.save("../../data/prepared/DKTFeatures_"+str(self.config.assignment)+"/test_data_"+str(self.fold) +".npy", np.array(test_data))
+            np.save(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(self.config.assignment)
+                                 +"/test_data_"+str(self.fold) +".npy"), np.array(test_data))
         return np.array(test_data)
