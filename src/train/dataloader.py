@@ -4,12 +4,13 @@ import torch.utils.data as Data
 from readdata import data_reader
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-def get_data_loader(config, num_of_questions, max_step, fold):
+
+def get_data_loader(config, num_of_questions, max_step, fold, ErrorID_LEN):
     handle = data_reader(config, fold,
-                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) + '/train_firstatt_' + str(fold) + '.csv'),
-                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) + '/val_firstatt_' + str(fold) + '.csv'),
-                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) + '/test_data.csv'), max_step,
-                         num_of_questions)
+                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) +"_" +str(config.frequency) + '/train_firstatt_' + str(fold) + '.csv'),
+                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) +"_" +str(config.frequency) + '/val_firstatt_' + str(fold) + '.csv'),
+                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) +"_" +str(config.frequency) + '/test_firstatt_' + str(fold) + '.csv'), max_step,
+                         num_of_questions, ErrorID_LEN)
 
     dtrain = torch.tensor(handle.get_train_data().astype(float).tolist(),
                           dtype=torch.float32)
@@ -23,9 +24,9 @@ def get_data_loader(config, num_of_questions, max_step, fold):
 
 def get_test_loader(config, num_of_questions, max_step, fold):
     handle = data_reader(config, fold,
-                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) + '/train_firstatt_' + str(fold) + '.csv'),
-                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) + '/val_firstatt_' + str(fold) + '.csv'),
-                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) + '/test_data.csv'), max_step,
+                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) +"_" +str(config.frequency) + '/train_firstatt_' + str(fold) + '.csv'),
+                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) +"_" +str(config.frequency) + '/val_firstatt_' + str(fold) + '.csv'),
+                         os.path.join(current_dir, '../../data/prepared/DKTFeatures_' + str(config.assignment) +"_" +str(config.frequency) + '/test_firstatt_' + str(fold)+'.csv'), max_step,
                          num_of_questions)
 
     dtest = torch.tensor(handle.get_test_data().astype(float).tolist(),

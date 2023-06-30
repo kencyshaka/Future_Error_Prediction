@@ -58,7 +58,7 @@ def plot_heatmap(batch, pred, fold, batch_n, config):
 
 
 class lossFunc(nn.Module):
-    def __init__(self, num_of_questions, max_step, device, prediction_type,loss_type,):
+    def __init__(self, num_of_questions, max_step, device, prediction_type, loss_type):
         super(lossFunc, self).__init__()
         self.crossEntropy = nn.BCELoss()
         self.num_of_questions = num_of_questions

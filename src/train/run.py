@@ -5,7 +5,7 @@ import torch
 import sys
 import torch.optim as optim
 import numpy as np
-
+import pandas as pd
 from dataloader import get_data_loader
 import loss_function
 import warnings
@@ -49,6 +49,10 @@ def main():
     if not os.path.isdir(save_result):
         os.mkdir(save_result)
 
+    df_errors = pd.read_csv(os.path.join(current_dir, '../../data/prepared/errors/' + str(
+        config.assignment) + '/occured_errors_updated_' + str(config.frequency) + '.csv'))
+    ErrorID_LEN = len(df_errors)
+
     run = wandb.init(
         # Set the project where this run will be logged
         project="Future Error prediction",
@@ -66,9 +70,10 @@ def main():
             "code": config.MAX_CODE_LEN * 3,
             "question": config.MAX_QUESTION_LEN_partI + config.MAX_QUESTION_LEN_partII,
             "q_embedds_type": config.embedds_type,
-            "error_vector": config.ErrorID_LEN,
+            "error_vector": ErrorID_LEN,
             "prediction": config.Prediction,
             "loss_type": config.loss_type,
+            "frequency": config.frequency,
         })
 
     performance_list = []
@@ -80,19 +85,19 @@ def main():
     for fold in range(2):
         print("----", fold, "-th run----")
 
-        train_loader, test_loader = get_data_loader(config, config.questions, config.length, fold)
+        train_loader, test_loader = get_data_loader(config, config.questions, config.length, fold, ErrorID_LEN)
         if config.assignment == 487:
             node_count, path_count = np.load(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"
-                                                          + str(config.assignment) + "/np_counts_"
+                                                          + str(config.assignment) + "_"+str(config.frequency) +"/np_counts_"
                                                           + str(config.assignment) + "_" + str(fold) + ".npy"))
         else:
             node_count, path_count = np.load(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"
-                                                          + str(config.assignment) + "/np_counts.npy"))
+                                                          + str(config.assignment) + "_"+str(config.frequency) + "/np_counts.npy"))
 
         model = c2vRNNModel(config, config.model_type, config.questions * 2,
                             config.hidden,
                             config.layers,
-                            config.ErrorID_LEN,
+                            ErrorID_LEN,
                             node_count, path_count, device)
 
         optimizer = optim.Adam(model.parameters(), lr=config.lr)
@@ -120,7 +125,7 @@ def main():
         confusion_matrix_list.append(confusion_matrix)
 
     logging_evaluation_metrics(first_total_scores_list, scores_list, first_scores_list, performance_list,
-                               confusion_matrix_list, config)
+                               confusion_matrix_list, config,ErrorID_LEN)
 
 
 if __name__ == '__main__':

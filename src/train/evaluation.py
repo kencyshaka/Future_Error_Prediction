@@ -358,7 +358,7 @@ def get_attempted_questions_performance(pred, batch, config):
 
 
 def logging_evaluation_metrics(first_total_scores_list, scores_list, first_scores_list, performance_list,
-                               confusion_matrix_list, config):
+                               confusion_matrix_list, config,ErrorID_LEN):
     print("***************************************** done ******************************************")
     print("Average scores of the first attempts:   ", np.mean(first_total_scores_list, axis=0))
     print("Average scores of all overall attempts: ", np.mean(performance_list, axis=0))
@@ -439,11 +439,10 @@ def logging_evaluation_metrics(first_total_scores_list, scores_list, first_score
     confusion_matrices = confusion_matrix_list[max_index]
     # Define the labels for the first 10 errorIDs subset
     labels_first = ['ErrorID ' + str(i) for i in range(10)]
-    plot_confusion_matrix(confusion_matrices, labels_first, "confusion_matrices_first.pdf")
+    plot_confusion_matrix(confusion_matrices, labels_first, "confusion_matrices_first"+str(config.assignment)+"_"+str(config.frequency)+".pdf")
 
-    if config.ErrorID_LEN == 85:
-        labels_last = ['ErrorID ' + str(i) for i in range(75, 85)]
-        plot_confusion_matrix(confusion_matrices, labels_last, "confusion_matrices_last.pdf")
+    labels_last = ['ErrorID ' + str(i) for i in range(ErrorID_LEN-10, ErrorID_LEN)]
+    plot_confusion_matrix(confusion_matrices, labels_last, "confusion_matrices_last"+str(config.assignment)+"_"+str(config.frequency)+".pdf")
 
 
 def plot_confusion_matrix(confusion_matrices, labels_first,filename):

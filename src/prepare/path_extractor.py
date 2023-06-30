@@ -210,7 +210,7 @@ def main():
     main_df["RawASTPath"] = ["@".join(A) for A in AST_paths]
     print("storing the data")
     
-    main_df.to_csv(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"+str(config.assignment)+"/labeled_paths.tsv"), sep="\t", header=True)
+    main_df.to_csv(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"+str(config.assignment)+"_"+str(config.frequency)+"/labeled_paths.tsv"), sep="\t", header=True)
     
         
 if __name__ == "__main__":

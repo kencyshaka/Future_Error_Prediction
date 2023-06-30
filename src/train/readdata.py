@@ -62,7 +62,7 @@ def convert_to_idx(sample, node_word_index, path_word_index):
 
 
 class data_reader():
-    def __init__(self, config,fold,train_path, val_path, test_path, maxstep, numofques):
+    def __init__(self, config,fold,train_path, val_path, test_path, maxstep, numofques, ErrorID_LEN):
         self.train_path = train_path
         self.val_path = val_path
         self.test_path = test_path
@@ -70,12 +70,17 @@ class data_reader():
         self.numofques = numofques
         self.config = config
         self.fold = fold
+        self.ErrorID_LEN = ErrorID_LEN
+        error_indices_df = pd.read_csv(os.path.join(current_dir, '../../data/prepared/errors/'
+                                                    + str(config.assignment) + '/error_indices_'
+                                                    + str(config.frequency) + '.csv'))
+        self.error_indices = error_indices_df.set_index('key')['value'].to_dict()
 
     def get_data(self, file_path):
         config = Config()
         data = []
-        code_df = pd.read_csv(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"/labeled_paths.tsv"),sep="\t")
-        training_students = np.load(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"/training_students.npy"),allow_pickle=True)
+        code_df = pd.read_csv(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"_"+str(config.frequency)+"/labeled_paths.tsv"),sep="\t")
+        training_students = np.load(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"_"+str(config.frequency)+"/training_students.npy"),allow_pickle=True)
         all_training_code = code_df[code_df['subject_ID'].isin(training_students)]['RawASTPath']
         separated_code = []
         for code in all_training_code:
@@ -117,9 +122,9 @@ class data_reader():
         path_count = len(path_hist)
 
         if config.assignment == 487:
-            np.save(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"/np_counts_"+str(self.fold)+".npy"), [node_count, path_count])
+            np.save(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"_"+str(config.frequency)+"/np_counts_"+str(self.fold)+".npy"), [node_count, path_count])
         else:
-            np.save(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"/np_counts.npy"), [node_count, path_count])
+            np.save(os.path.join(current_dir,"../../data/prepared/DKTFeatures_"+str(config.assignment)+"_"+str(config.frequency)+"/np_counts.npy"), [node_count, path_count])
 
         # small frequency then abandon, for node and path
         valid_node = [node for node, count in node_hist.items()]
@@ -140,9 +145,6 @@ class data_reader():
         _, _, pre_pro_embed = embed_data['pro_repre'], embed_data['skill_repre'], embed_data['pro_final_repre']
         #print(pre_pro_embed.shape, pre_pro_embed.dtype)
 
-
-
-
         with open(file_path, 'r') as file:
             for lent, css, ques, ans, err in itertools.zip_longest(*[file] * 5):
                 lent = int(lent.strip().strip(','))
@@ -158,7 +160,7 @@ class data_reader():
                                        + self.config.MAX_QUESTION_LEN_partI
                                        + self.config.MAX_QUESTION_LEN_partII
                                        + self.config.Reference_LEN
-                                       + self.config.ErrorID_LEN])
+                                       + self.ErrorID_LEN])
 
                 if lent >= self.maxstep:
                     steps = self.maxstep
@@ -256,6 +258,11 @@ class data_reader():
         return data
 
     def get_errorID_embeddings(self, error):
+        # convert the error_labels to follow the names from the dictionary error_indices
+        # main_df['error_labels'] = main_df['error_ID'].str.split('_')
+        # main_df['unique_values'] = main_df['error_labels'].apply(lambda x: sorted(set(x)))
+        # df["converted_error_labels"] = list(df["error_labels"].apply(lambda x: [error_indices.get(str(val), None) for val in x]))
+        # ErrorArray = list(df["converted_error_labels"].apply(lambda values: np.array([1 if i in values else 0 for i in range(len(error_indices))])))
 
         if '_' in error:
 
@@ -265,10 +272,10 @@ class data_reader():
 
         # Remove duplicates and convert to integers
         error_ids = list(set(error_ids))
-        error_ids = [int(id) for id in error_ids]
+        error_ids = [self.error_indices.get(int(id), None) for id in error_ids]
 
         # Create a vector of size 84 with 1s at the specified indices
-        vector_size = self.config.ErrorID_LEN
+        vector_size = self.ErrorID_LEN
         vector = np.zeros((1, vector_size))
         vector[0, error_ids] = 1
 

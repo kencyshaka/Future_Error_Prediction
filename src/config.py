@@ -2,6 +2,7 @@ class Config:
     def __init__(self):
         self.length = 50
         self.questions = 10
+        self.frequency = 50
         self.lr = 0.0005
         self.bs = 128      #128
         self.epochs = 1    #40

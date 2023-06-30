@@ -34,7 +34,7 @@ class c2vRNNModel(nn.Module):
                                + config.MAX_QUESTION_LEN_partI \
                                + config.MAX_QUESTION_LEN_partII \
                                + config.Reference_LEN  \
-                               + config.ErrorID_LEN
+                               + output_dim #ErrorID_LEN
                                                     #( score, code, question,reference_soln,errorID)
 
         self.input_dim = input_dim

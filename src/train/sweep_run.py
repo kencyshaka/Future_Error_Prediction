@@ -124,7 +124,7 @@ if __name__ == '__main__':
                 # 'values': [ 0.0001, 0.0009]
             },
             'hidden': {
-                'values': [128, 260, 512]
+                'values': [64, 128, 260, 512]
             },
             'layers': {
                 'values': [1, 4, 6, 8]
@@ -140,6 +140,9 @@ if __name__ == '__main__':
             },
             'assignment': {
                 'values': [439]
+            },
+            'frequency': {
+                'values': [0, 10, 50, 100]
             },
             'code_path_length': {
                 'values': [8]
