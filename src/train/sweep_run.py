@@ -5,7 +5,7 @@ import torch
 import sys
 import torch.optim as optim
 import numpy as np
-
+import pandas as pd
 from dataloader import get_data_loader
 import loss_function
 import warnings
@@ -49,7 +49,9 @@ def main():
     if not os.path.isdir(save_result):
         os.mkdir(save_result)
 
-
+    df_errors = pd.read_csv(os.path.join(current_dir, '../../data/prepared/errors/' + str(
+        config.assignment) + '/occured_errors_updated_' + str(config.frequency) + '.csv'))
+    ErrorID_LEN = len(df_errors)
 
     performance_list = []
     scores_list = []
@@ -60,19 +62,21 @@ def main():
     for fold in range(2):
         print("----", fold, "-th run----")
 
-        train_loader, test_loader = get_data_loader(config, config.questions, config.length, fold)
+        train_loader, test_loader = get_data_loader(config, config.questions, config.length, fold, ErrorID_LEN)
         if config.assignment == 487:
             node_count, path_count = np.load(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"
-                                                          + str(config.assignment) + "/np_counts_"
+                                                          + str(config.assignment) + "_" + str(
+                config.frequency) + "/np_counts_"
                                                           + str(config.assignment) + "_" + str(fold) + ".npy"))
         else:
             node_count, path_count = np.load(os.path.join(current_dir, "../../data/prepared/DKTFeatures_"
-                                                          + str(config.assignment) + "/np_counts.npy"))
+                                                          + str(config.assignment) + "_" + str(
+                config.frequency) + "/np_counts.npy"))
 
         model = c2vRNNModel(config, config.model_type, config.questions * 2,
                             config.hidden,
                             config.layers,
-                            config.ErrorID_LEN,
+                            ErrorID_LEN,
                             node_count, path_count, device)
 
         optimizer = optim.Adam(model.parameters(), lr=config.lr)
@@ -86,7 +90,7 @@ def main():
                                                          loss_func, config, device, epoch)
 
         # Save the trained model:
-        torch.save(model.state_dict(), os.path.join(save_model, 'model_'+str(fold)+'.pth'))
+        torch.save(model.state_dict(), os.path.join(save_model, 'model_' + str(fold) + '.pth'))
 
         # Inference time
         model.eval()
@@ -100,12 +104,12 @@ def main():
         confusion_matrix_list.append(confusion_matrix)
 
     logging_evaluation_metrics(first_total_scores_list, scores_list, first_scores_list, performance_list,
-                               confusion_matrix_list, config)
+                               confusion_matrix_list, config, ErrorID_LEN)
 
 
 if __name__ == '__main__':
     sweep_config = {
-        'method': 'random',  # grid, random
+        'method': 'bayes',  # grid, random, bayes
         'metric': {
             'name': 'Overall_F1_score',
             'goal': 'maximize'
@@ -118,10 +122,10 @@ if __name__ == '__main__':
                 'values': [32, 64, 128]
             },
             'lr': {
-                'distribution': 'uniform',
-                'min': 0.000001,
-                'max': 0.01
-                # 'values': [ 0.0001, 0.0009]
+               # 'distribution': 'uniform',
+               # 'min': 0.000001,
+               # 'max': 0.01
+                'values': [ 0.009,0.0001,0.00005,0.00001]
             },
             'hidden': {
                 'values': [64, 128, 260, 512]
@@ -142,7 +146,7 @@ if __name__ == '__main__':
                 'values': [439]
             },
             'frequency': {
-                'values': [0, 10, 50, 100]
+                'values': [10, 50, 100]
             },
             'code_path_length': {
                 'values': [8]
@@ -184,7 +188,7 @@ if __name__ == '__main__':
     )
     print("the sweep_id is", sweep_id)
 
-    wandb.agent(sweep_id, function=main, count=50)
+    wandb.agent(sweep_id, function=main, count=200)
 
 
 
